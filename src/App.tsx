@@ -1,4 +1,3 @@
-
 // todo
 // nach datum sortieren
 // buttons im removedings stylen
@@ -6,63 +5,40 @@
 // idee: nur noch im storage speichern und draussen einfach laden
 // was wenn im edit das datum geändert wird ??
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import EntryList from "./components/EntryList"
 import ConfirmRemoveModal from "./components/ConfirmRemoval"
 import ViewEntryModal from "./components/ViewEntryModal"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 //import { loadDiaryEntries, saveDiaryEntries } from "./util/storage";
-import { useEffect, useRef } from "react";
 
-import type { Artwork } from "../types";
+import { type Artwork } from "./types";
+import { ArtworkContext } from "./context/ArtworkContext";
+import { fetchArtworks } from "./api/chicagoAPI"
 
-const art1 = {
-    id: 16568,
-    title: "Water Lilies",
-    artist_title: "Claude Monet",
-    image_id: "3c27b499-af56-f0d5-93b5-a7f2f1ad5813",
-    notes: "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
-            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
-            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
-            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
-            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore "
-  };
-
-  const art2: Artwork = {
-  id: 27992,
-  title: "A Sunday on La Grande Jatte — 1884",
-  artist_title: "Georges Seurat",
-  image_id: "2d484387-2509-5e8e-2c43-22f9981972eb"
-  };
-
-
-
-  const loadArtEntries = () : Artwork[]  => {
-    return ([art1,art2]);
-  }
-
+import SearchBarView from "./components/SearchBar";
 
 function App() {
 
-
-
-
+  // setup context for artwork
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
 
   //const [isAddEntryModalOpen, setAddEntryModalOpen]   = useState<boolean>(false);
   const [isViewEntryModalOpen, setViewEntryModalOpen] = useState<boolean>(false);
-  const [isRemoveModalOpen, setRemoveModalOpen]       = useState<boolean>(false);
-  const [selectedEntry, setSelectedEntry]             = useState<Artwork | null>(null);
-  const [entries, setEntries]                         = useState<Artwork[]>(loadArtEntries());
-
-
-
+  const [isRemoveModalOpen, setRemoveModalOpen] = useState<boolean>(false);
+  const [selectedEntry, setSelectedEntry] = useState<Artwork | null>(null);
 
   //const isEditRef = useRef<boolean>(false);
 
+  // on load
   useEffect(() => {
-   //saveArtEntries(entries);
-  }, [entries]);
+    fetchArtworks()
+      .then((data) => setArtworks(data))
+      .catch((error) => {
+        console.error("Error fetching artworks:", error);
+      });
+  }, []);
 
   const openViewEntryModal = (entry: Artwork) => {
     setSelectedEntry(entry);
@@ -85,16 +61,16 @@ function App() {
     //isEditRef.current=true;
     console.log("BLOED!!")
     console.log(entry)
-    console.log(entries);
+    // console.log(entries);
     setSelectedEntry(entry);
     //setViewEntryModalOpen(false);
     //setAddEntryModalOpen(true);
 
     const editEntry = entry;
-      setEntries(prev => {
-        const updated = prev.map(e => (e.id === editEntry.id) ? editEntry : e);
-        return updated;
-      });
+    setArtworks(prev => {
+      const updated = prev.map(e => (e.id === editEntry.id) ? editEntry : e);
+      return updated;
+    });
 
   };
 
@@ -121,41 +97,43 @@ function App() {
       });
     }
     */
-    closeAddEntryModal();
-};
+    // closeAddEntryModal();
+  };
 
-const removeEntryYes = (entry: Artwork) => {
- //entries.splice(entries.indexOf(entry), 1);
- setEntries(entries.filter(el => el != entry));
- setSelectedEntry(null);
- // save done by effect
- setRemoveModalOpen(false);
- setViewEntryModalOpen(false);
-}
+  const removeEntryYes = (entry: Artwork) => {
+    //entries.splice(entries.indexOf(entry), 1);
+    // setEntries(entries.filter(el => el != entry));
+    setSelectedEntry(null);
+    // save done by effect
+    setRemoveModalOpen(false);
+    setViewEntryModalOpen(false);
+  }
 
-const removeEntryNo = () => {
- setRemoveModalOpen(false);
- setViewEntryModalOpen(false);
-}
+  const removeEntryNo = () => {
+    setRemoveModalOpen(false);
+    setViewEntryModalOpen(false);
+  }
 
-const removeEntry = (entry: Artwork) => {
- setSelectedEntry(entry);
- setRemoveModalOpen(true);
-};
+  const removeEntry = (entry: Artwork) => {
+    setSelectedEntry(entry);
+    setRemoveModalOpen(true);
+  };
 
   return (
     <>
-      <Header onAddClick={openAddEntryModal} />
-      <main>
-        <EntryList onClick={openViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entries={entries} /> {/*This displays the list of EntryCard and opens ViewEntryModal when clicked, which displays EntryDetails*/}
-      </main>
-      <Footer />
-        <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry}  entry={selectedEntry} />
-        <ConfirmRemoveModal open={isRemoveModalOpen} selectedEntry={selectedEntry!}  onYes={removeEntryYes}  onNo={removeEntryNo}  />
+      <ArtworkContext.Provider value={{ artworks, setArtworks }}>
+        <Header onAddClick={openAddEntryModal} />
+        <SearchBarView />
+        <main>
+          <EntryList onClick={openViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entries={artworks} /> {/*This displays the list of EntryCard and opens ViewEntryModal when clicked, which displays EntryDetails*/}
+        </main>
+        <Footer />
+        <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entry={selectedEntry} />
+        <ConfirmRemoveModal open={isRemoveModalOpen} selectedEntry={selectedEntry!} onYes={removeEntryYes} onNo={removeEntryNo} />
+      </ArtworkContext.Provider>
+      
     </>
-
   );
 }
-
 
 export default App;

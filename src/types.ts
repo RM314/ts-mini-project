@@ -33,7 +33,7 @@ export const ArtworkSchema = z .object({
       .nullable()
       .catch(null),
 
-      notes: z.string().nullable(),
+      notes: z.string().nullable().catch(null),
   })
   .strip();
 

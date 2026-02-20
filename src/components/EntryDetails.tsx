@@ -27,8 +27,8 @@ const EntryDetails = ({ entry, constrained, onDetails, removeEntry, editEntry } 
     return (
     <div className={constrained ? "max-w-3xl mx-auto flex flex-col" : ""} >
         <div className="p-6 overflow-hidden">
-            <h1 style={{fontFamily: "'Caveat', 'Indie Flower', 'Kalam', cursive"}} className="text-3xl font-semibold mb-4"> {entry.title} </h1>
-            <h1 style={{fontFamily: "'Caveat', 'Indie Flower', 'Kalam', cursive"}} className="text-3xl font-semibold mb-4"> {entry.artist_title} </h1>
+            <h1 style={{fontFamily: "'Caveat', 'Indie Flower', 'Kalam', cursive"}} className="text-4xl font-semibold mb-4"> {entry.title} </h1>
+            <h1 style={{fontFamily: "'Caveat', 'Indie Flower', 'Kalam', cursive"}} className="text-2xl mb-4"> {entry.artist_title} </h1>
 
             <div className="text-gray-600 text-sm mb-3"> {entry.id} </div>
             {/* image */}
@@ -43,7 +43,7 @@ const EntryDetails = ({ entry, constrained, onDetails, removeEntry, editEntry } 
             {/* notes */}
                 {entry.notes && constrained && (
                     <div className={`${imageUrl ? "md:w-2/3" : "w-full"}`}>
-                        <div className="max-h-[300px]">
+                        <div className="max-h-75">
                         <div className="leading-relaxed line-clamp-6 overflow-hidden">
                             {entry.notes}
                         </div>
@@ -53,7 +53,7 @@ const EntryDetails = ({ entry, constrained, onDetails, removeEntry, editEntry } 
 
                 {entry.notes && !constrained && !editingNotes && (
                     <div className={`${imageUrl ? "md:w-2/3" : "w-full"}`}>
-                        <div className="max-h-[300px] overflow-y-auto">
+                        <div className="max-h-75 overflow-y-auto">
                         <div className="leading-relaxed">
                             {entry.notes}
                         </div>
@@ -64,7 +64,7 @@ const EntryDetails = ({ entry, constrained, onDetails, removeEntry, editEntry } 
                 {!constrained && editingNotes && (
                 <div className={`${imageUrl ? "md:w-2/3" : "w-full"}`}>
                         <textarea
-                        className="textarea textarea-bordered w-full min-h-[200px]"
+                        className="textarea textarea-bordered w-full min-h-50"
                         value={notesValue}
                         onChange={(e) => setNotesValue(e.target.value)}
                         />

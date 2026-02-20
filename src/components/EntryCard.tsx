@@ -11,7 +11,7 @@ type Props = {
 const EntryCard = ({entry, onClick, removeEntry, editEntry} : Props) => {
     return (
     <div className="bg-white rounded-lg shadow-md p-4">
-        <EntryDetails entry={entry} constrained={true} disabled={false} onDetails={(event) => onClick(entry)} removeEntry={(event) => removeEntry(entry)} editEntry={(event) => editEntry(entry)}/>
+        <EntryDetails entry={entry} constrained={true} onDetails={(event) => onClick(entry)} removeEntry={(event) => removeEntry(entry)} editEntry={(event) => editEntry(entry)}/>
     </div>
 )};
 

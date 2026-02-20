@@ -7,7 +7,6 @@
 // was wenn im edit das datum geändert wird ??
 
 import { useState } from "react"
-import AddEntryModal from "./components/AddEntryModal"
 import EntryList from "./components/EntryList"
 import ConfirmRemoveModal from "./components/ConfirmRemoval"
 import ViewEntryModal from "./components/ViewEntryModal"
@@ -22,7 +21,12 @@ const art1 = {
     id: 16568,
     title: "Water Lilies",
     artist_title: "Claude Monet",
-    image_id: "3c27b499-af56-f0d5-93b5-a7f2f1ad5813"
+    image_id: "3c27b499-af56-f0d5-93b5-a7f2f1ad5813",
+    notes: "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
+            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
+            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
+            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore " +
+            "lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore "
   };
 
   const art2: Artwork = {
@@ -140,7 +144,6 @@ const removeEntry = (entry: Artwork) => {
         <EntryList onClick={openViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entries={entries} /> {/*This displays the list of EntryCard and opens ViewEntryModal when clicked, which displays EntryDetails*/}
       </main>
       <Footer />
-        <AddEntryModal isOpen={isAddEntryModalOpen} onClose={closeAddEntryModal} onAddEntry={handleNewEntry} entry={selectedEntry}/>
         <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry}  entry={selectedEntry} />
         <ConfirmRemoveModal open={isRemoveModalOpen} selectedEntry={selectedEntry!}  onYes={removeEntryYes}  onNo={removeEntryNo}  />
     </>

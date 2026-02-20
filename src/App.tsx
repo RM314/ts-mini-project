@@ -154,8 +154,6 @@ const ArtworkCard = (artwork: Artwork) => {
         <img
           src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}
           alt={artwork.title}
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
         />
       ) : (
         <p>No image available</p>

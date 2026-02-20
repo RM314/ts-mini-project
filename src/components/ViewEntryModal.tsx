@@ -29,7 +29,7 @@ const ViewEntryModal = ({ isOpen, onClose, removeEntry, editEntry, entry } : Pro
             >
                 Close
             </button>
-           <EntryDetails entry={entry} constrained={false} disabled={true}  onDetails={() => {}}  removeEntry={(event) => removeEntry(entry)} editEntry={(event) => editEntry(entry)}/>
+           <EntryDetails entry={entry} constrained={false} disabled={true}  onDetails={() => {}}  removeEntry={(event) => removeEntry(entry)} editEntry={editEntry}/>
         </div>
     </div>
     );

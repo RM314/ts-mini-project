@@ -49,7 +49,7 @@ function App() {
 
 
 
-  const [isAddEntryModalOpen, setAddEntryModalOpen]   = useState<boolean>(false);
+  //const [isAddEntryModalOpen, setAddEntryModalOpen]   = useState<boolean>(false);
   const [isViewEntryModalOpen, setViewEntryModalOpen] = useState<boolean>(false);
   const [isRemoveModalOpen, setRemoveModalOpen]       = useState<boolean>(false);
   const [selectedEntry, setSelectedEntry]             = useState<Artwork | null>(null);
@@ -58,7 +58,7 @@ function App() {
 
 
 
-  const isEditRef = useRef<boolean>(false);
+  //const isEditRef = useRef<boolean>(false);
 
   useEffect(() => {
    //saveArtEntries(entries);
@@ -74,21 +74,28 @@ function App() {
     setViewEntryModalOpen(false);
   };
 
-  const closeAddEntryModal = () => {
-    setAddEntryModalOpen(false);
-  };
 
   const openAddEntryModal = () => {
-    isEditRef.current=false;
+    //isEditRef.current=false;
     setSelectedEntry(null);
-    setAddEntryModalOpen(true);
+    //setAddEntryModalOpen(true);
   };
 
   const editEntry = (entry: Artwork) => {
-    isEditRef.current=true;
+    //isEditRef.current=true;
+    console.log("BLOED!!")
+    console.log(entry)
+    console.log(entries);
     setSelectedEntry(entry);
-    setViewEntryModalOpen(false);
-    setAddEntryModalOpen(true);
+    //setViewEntryModalOpen(false);
+    //setAddEntryModalOpen(true);
+
+    const editEntry = entry;
+      setEntries(prev => {
+        const updated = prev.map(e => (e.id === editEntry.id) ? editEntry : e);
+        return updated;
+      });
+
   };
 
   const handleNewEntry = (newEntry: Artwork) => {
@@ -133,7 +140,7 @@ const removeEntryNo = () => {
 
 const removeEntry = (entry: Artwork) => {
  setSelectedEntry(entry);
- console.log(entry);
+ //console.log(entry);
  setRemoveModalOpen(true);
 };
 

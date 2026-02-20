@@ -13,27 +13,54 @@ import ConfirmRemoveModal from "./components/ConfirmRemoval"
 import ViewEntryModal from "./components/ViewEntryModal"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import { loadDiaryEntries, saveDiaryEntries } from "./util/storage";
+//import { loadDiaryEntries, saveDiaryEntries } from "./util/storage";
 import { useEffect, useRef } from "react";
 
+import type { Artwork } from "../types";
 
-import type {DiaryEntry,NewEntryInput } from "./types.ts";
+const art1 = {
+    id: 16568,
+    title: "Water Lilies",
+    artist_title: "Claude Monet",
+    image_id: "3c27b499-af56-f0d5-93b5-a7f2f1ad5813"
+  };
+
+  const art2: Artwork = {
+  id: 27992,
+  title: "A Sunday on La Grande Jatte — 1884",
+  artist_title: "Georges Seurat",
+  image_id: "2d484387-2509-5e8e-2c43-22f9981972eb"
+  };
+
+
+
+  const loadArtEntries = () : Artwork[]  => {
+    return ([art1,art2]);
+  }
 
 
 function App() {
+
+
+
+
+
   const [isAddEntryModalOpen, setAddEntryModalOpen]   = useState<boolean>(false);
   const [isViewEntryModalOpen, setViewEntryModalOpen] = useState<boolean>(false);
   const [isRemoveModalOpen, setRemoveModalOpen]       = useState<boolean>(false);
-  const [selectedEntry, setSelectedEntry]             = useState<DiaryEntry | null>(null);
-  const [entries, setEntries]                         = useState<DiaryEntry[]>(loadDiaryEntries());
+  const [selectedEntry, setSelectedEntry]             = useState<Artwork | null>(null);
+  const [entries, setEntries]                         = useState<Artwork[]>(loadArtEntries());
+
+
+
 
   const isEditRef = useRef<boolean>(false);
 
   useEffect(() => {
-   saveDiaryEntries(entries);
+   //saveArtEntries(entries);
   }, [entries]);
 
-  const openViewEntryModal = (entry: DiaryEntry) => {
+  const openViewEntryModal = (entry: Artwork) => {
     setSelectedEntry(entry);
     setViewEntryModalOpen(true);
   };
@@ -53,15 +80,16 @@ function App() {
     setAddEntryModalOpen(true);
   };
 
-  const editEntry = (entry: DiaryEntry) => {
+  const editEntry = (entry: Artwork) => {
     isEditRef.current=true;
     setSelectedEntry(entry);
     setViewEntryModalOpen(false);
     setAddEntryModalOpen(true);
   };
 
-  const handleNewEntry = (newEntry: NewEntryInput | DiaryEntry) => {
+  const handleNewEntry = (newEntry: Artwork) => {
 
+    /*
     if (!isEditRef.current) {
       const entry= {
         ...newEntry,
@@ -74,17 +102,18 @@ function App() {
         return sorted;
       });
     } else {
-      const editEntry = newEntry as DiaryEntry;
+      const editEntry = newEntry as Artwork;
       setEntries(prev => {
         const updated = prev.map(e => (e.id === editEntry.id) ? editEntry : e);
         const sorted=updated.toSorted((a, b) => b.date.localeCompare(a.date))
         return sorted;
       });
     }
+    */
     closeAddEntryModal();
 };
 
-const removeEntryYes = (entry: DiaryEntry) => {
+const removeEntryYes = (entry: Artwork) => {
  entries.splice(entries.indexOf(entry), 1);
  setEntries(entries.filter(el => el != entry));
  setSelectedEntry(null);
@@ -98,7 +127,7 @@ const removeEntryNo = () => {
  setViewEntryModalOpen(false);
 }
 
-const removeEntry = (entry: DiaryEntry) => {
+const removeEntry = (entry: Artwork) => {
  setSelectedEntry(entry);
  console.log(entry);
  setRemoveModalOpen(true);

@@ -1,11 +1,11 @@
-import type { DiaryEntry } from "../types";
+import type { Artwork } from "../types";
 import EntryDetails from "./EntryDetails";
 
 type Props = {
-  entry: DiaryEntry;
-  onClick: (entry: DiaryEntry) => void;
-  removeEntry: (entry: DiaryEntry) => void;
-  editEntry: (entry: DiaryEntry) => void;
+  entry: Artwork;
+  onClick: (entry: Artwork) => void;
+  removeEntry: (entry: Artwork) => void;
+  editEntry: (entry: Artwork) => void;
 };
 
 const EntryCard = ({entry, onClick, removeEntry, editEntry} : Props) => {

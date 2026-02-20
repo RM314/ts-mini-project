@@ -1,11 +1,11 @@
-import type { DiaryEntry } from "../types";
+import type { Artwork } from "../types";
 import EntryForm from "./EntryForm.jsx";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onAddEntry: (entry: Omit<DiaryEntry, "id"> | DiaryEntry) => void;
-  entry: DiaryEntry | null;
+  onAddEntry: (entry: Artwork) => void;
+  entry: Artwork | null;
 };
 
 const AddEntryModal = ({ onAddEntry,  isOpen, onClose, entry} : Props) => {

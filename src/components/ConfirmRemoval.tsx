@@ -1,9 +1,9 @@
-import type { DiaryEntry } from "../types";
+import type { Artwork } from "../types";
 
 type Props = {
   open: boolean;
-  selectedEntry: DiaryEntry;
-  onYes: (entry: DiaryEntry) => void;
+  selectedEntry: Artwork;
+  onYes: (entry: Artwork) => void;
   onNo: () => void;
 };
 

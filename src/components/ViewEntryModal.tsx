@@ -1,12 +1,12 @@
 import EntryDetails from "./EntryDetails";
-import type { DiaryEntry } from "../types";
+import type { Artwork } from "../types";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  removeEntry: (entry: DiaryEntry) => void;
-  editEntry: (entry: DiaryEntry) => void;
-  entry: DiaryEntry;
+  removeEntry: (entry: Artwork) => void;
+  editEntry: (entry: Artwork) => void;
+  entry: Artwork;
 };
 
 const ViewEntryModal = ({ isOpen, onClose, removeEntry, editEntry, entry } : Props) => {

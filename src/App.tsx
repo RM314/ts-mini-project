@@ -125,7 +125,7 @@ function App() {
 };
 
 const removeEntryYes = (entry: Artwork) => {
- entries.splice(entries.indexOf(entry), 1);
+ //entries.splice(entries.indexOf(entry), 1);
  setEntries(entries.filter(el => el != entry));
  setSelectedEntry(null);
  // save done by effect
@@ -140,7 +140,6 @@ const removeEntryNo = () => {
 
 const removeEntry = (entry: Artwork) => {
  setSelectedEntry(entry);
- //console.log(entry);
  setRemoveModalOpen(true);
 };
 

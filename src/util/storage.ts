@@ -1,3 +1,4 @@
+import { de } from "zod/locales";
 import type { DiaryEntry, NewEntryInput } from "../types";
 
 const STORAGE_KEY : string = 'personal_diary_entries';

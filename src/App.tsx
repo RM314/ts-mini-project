@@ -16,10 +16,13 @@ import Footer from "./components/Footer"
 import { type Artwork } from "./types";
 import { ArtworkContext } from "./context/ArtworkContext";
 import { fetchArtworks } from "./api/chicagoAPI"
+import { useViewModeContext, ViewMode } from "./context/ViewModeContext";
+import { removeFavoriteFromLocalStorage } from "./util/storage";
 
 import SearchBarView from "./components/SearchBar";
 
 function App() {
+  const { viewMode } = useViewModeContext();
 
   // setup context for artwork
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -33,12 +36,12 @@ function App() {
 
   // on load
   useEffect(() => {
-    fetchArtworks()
+    fetchArtworks(viewMode === ViewMode.Favorites)
       .then((data) => setArtworks(data))
       .catch((error) => {
         console.error("Error fetching artworks:", error);
       });
-  }, []);
+  }, [viewMode]);
 
   const openViewEntryModal = (entry: Artwork) => {
     setSelectedEntry(entry);
@@ -48,13 +51,6 @@ function App() {
   const closeViewEntryModal = () => {
     setSelectedEntry(null);
     setViewEntryModalOpen(false);
-  };
-
-
-  const openAddEntryModal = () => {
-    //isEditRef.current=false;
-    setSelectedEntry(null);
-    //setAddEntryModalOpen(true);
   };
 
   const editEntry = (entry: Artwork) => {
@@ -74,40 +70,34 @@ function App() {
 
   };
 
-  const handleNewEntry = (newEntry: Artwork) => {
-
-    /*
-    if (!isEditRef.current) {
-      const entry= {
-        ...newEntry,
-        id: crypto.randomUUID()
-      };
-      setEntries(prev => {
-        const updated = [...prev, entry];
-        const sorted=updated.toSorted((a, b) => b.date.localeCompare(a.date))
-        console.log(sorted.map(e => e.id));
-        return sorted;
-      });
-    } else {
-      const editEntry = newEntry as Artwork;
-      setEntries(prev => {
-        const updated = prev.map(e => (e.id === editEntry.id) ? editEntry : e);
-        const sorted=updated.toSorted((a, b) => b.date.localeCompare(a.date))
-        return sorted;
-      });
-    }
-    */
-    // closeAddEntryModal();
-  };
-
   const removeEntryYes = (entry: Artwork) => {
-    //entries.splice(entries.indexOf(entry), 1);
-    // setEntries(entries.filter(el => el != entry));
+    removeFavoriteFromLocalStorage(entry.id);
+
+    if (viewMode === ViewMode.All) {
+      // keep artwork in list, only clear favorite marker (notes)
+      setArtworks((prev: Artwork[]) => {
+        const updated = prev.map(e => {
+          if (e.id === entry.id) {
+            return { ...e, notes: null };
+          }
+
+          return e;
+        });
+
+        return updated;
+      });
+
+    } else {
+      // favorites mode: remove from visible list
+      setArtworks((prev: Artwork[]) => prev.filter(el => el.id !== entry.id));
+    }
+
     setSelectedEntry(null);
+
     // save done by effect
     setRemoveModalOpen(false);
     setViewEntryModalOpen(false);
-  }
+  };
 
   const removeEntryNo = () => {
     setRemoveModalOpen(false);
@@ -122,16 +112,16 @@ function App() {
   return (
     <>
       <ArtworkContext.Provider value={{ artworks, setArtworks }}>
-        <Header onAddClick={openAddEntryModal} />
+        <Header />
         <SearchBarView />
         <main>
           <EntryList onClick={openViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entries={artworks} /> {/*This displays the list of EntryCard and opens ViewEntryModal when clicked, which displays EntryDetails*/}
         </main>
         <Footer />
-        <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entry={selectedEntry} />
+        <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entry={selectedEntry!} />
         <ConfirmRemoveModal open={isRemoveModalOpen} selectedEntry={selectedEntry!} onYes={removeEntryYes} onNo={removeEntryNo} />
       </ArtworkContext.Provider>
-      
+
     </>
   );
 }

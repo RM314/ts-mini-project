@@ -11,7 +11,6 @@ type Props = {
 
 const ViewEntryModal = ({ isOpen, onClose, removeEntry, editEntry, entry } : Props) => {
 
-
     if (!isOpen) return null;
 
     return (
@@ -29,7 +28,7 @@ const ViewEntryModal = ({ isOpen, onClose, removeEntry, editEntry, entry } : Pro
             >
                 Close
             </button>
-           <EntryDetails entry={entry} constrained={false} disabled={true}  onDetails={() => {}}  removeEntry={(event) => removeEntry(entry)} editEntry={editEntry}/>
+           <EntryDetails entry={entry} constrained={false} disabled={true}  onDetails={() => {}} onClose={onClose}  removeEntry={(event) => removeEntry(entry)} editEntry={editEntry}/>
         </div>
     </div>
     );

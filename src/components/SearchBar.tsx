@@ -21,7 +21,7 @@ const SearchBarView = () => {
               console.error("Error fetching artworks:", error);
             });
         } else {
-            // indicate that typing is needed
+            // indicate that typing is needed.. maybe
             setArtworks([]);
         }
 

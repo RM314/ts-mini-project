@@ -76,7 +76,12 @@ const EntryDetails = ({ entry, constrained, onDetails, editEntry, onClose, remov
                                     className="btn btn-success"
                                     onClick={() => {
                                         const normalizedNotes = notesValue.trim().length > 0 ? notesValue : null;
-                                        saveFavoriteToLocalStorage({ artworkId: entry.id, notes: normalizedNotes });
+                                        saveFavoriteToLocalStorage({
+                                            artworkId: entry.id,
+                                            title: entry.title,
+                                            artist: entry.artist_title,
+                                            notes: normalizedNotes
+                                        });
                                         editEntry({ ...entry, notes: normalizedNotes });
                                         setEditingNotes(false);
                                     }}
@@ -118,7 +123,7 @@ const EntryDetails = ({ entry, constrained, onDetails, editEntry, onClose, remov
                     <button className="btn btn-danger" onClick={removeEntry}>  Delete </button>
                 </div> */}
 
-                <ArtworkActionButtons artworkId={entry.id} editEntry={onEditPress} removeEntry={() => removeEntry(entry)} />
+                <ArtworkActionButtons entry={entry} editEntry={onEditPress} removeEntry={() => removeEntry(entry)} />
             </div>
         </div>
     );
@@ -134,15 +139,15 @@ const EntryDetails = ({ entry, constrained, onDetails, editEntry, onClose, remov
 };
 
 type ArtworkActionButtonsProps = {
-    artworkId: number;
+    entry: Artwork;
     editEntry: () => void;
     removeEntry: () => void;
 };
 
-const ArtworkActionButtons = ({ artworkId, editEntry, removeEntry }: ArtworkActionButtonsProps) => {
+const ArtworkActionButtons = ({ entry, editEntry, removeEntry }: ArtworkActionButtonsProps) => {
 
     const { setArtworks } = useArtworkContext();
-    const isInFavorites: boolean = checkIfArtworkIsFavorite(artworkId);
+    const isInFavorites: boolean = checkIfArtworkIsFavorite(entry.id);
 
     return (
         <div className="mt-4 flex justify-start gap-3">
@@ -179,13 +184,18 @@ const ArtworkActionButtons = ({ artworkId, editEntry, removeEntry }: ArtworkActi
     )
 
     function onAddToFavoritesPress() {
-        console.log("On add to favorites press for", artworkId)
-        saveFavoriteToLocalStorage({ artworkId, notes: null });
+        console.log("On add to favorites press for", entry.title)
+        saveFavoriteToLocalStorage({
+            artworkId: entry.id,
+            title: entry.title,
+            artist: entry.artist_title,
+            notes: null
+        });
 
         // refreshing ui
         setArtworks((prev: Artwork[]) => {
             const updated = prev.map(e => {
-                if (e.id === artworkId) {
+                if (e.id === entry.id) {
                     return { ...e, notes: "" }; // adding empty notes to indicate favorite status
                 }
                 return e;
@@ -195,13 +205,13 @@ const ArtworkActionButtons = ({ artworkId, editEntry, removeEntry }: ArtworkActi
     }
 
     function onNotesPress() {
-        console.log("On notes press for", artworkId)
+        console.log("On notes press for", entry.title)
         // open notes editing UI
         editEntry();
     }
 
     function onRemoveFromFavoritesPress() {
-        console.log("On remove from favorites press for", artworkId)
+        console.log("On remove from favorites press for", entry.title)
         removeEntry(); // will show dialog to confirm
     }
 };

@@ -11,7 +11,7 @@ const SearchBarView = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (query.length > 2) {
-        searchArtworks(query)
+        searchArtworks(query, viewMode === ViewMode.Favorites)
           .then((results) => setArtworks(results))
           .catch((error) => {
             console.error("Error searching artworks:", error);

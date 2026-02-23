@@ -37,5 +37,11 @@ export function ViewModeProvider({ children }: { children: ReactNode }) {
 }
 
 export function useViewModeContext() {
-    return useContext(ViewModeContext);
+    const context = useContext(ViewModeContext);
+
+    if (!context) {
+        throw new Error("useViewModeContext must be used inside ViewModeProvider");
+    }
+
+    return context;
 }

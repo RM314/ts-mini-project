@@ -2,11 +2,6 @@ import { z } from 'zod/v4';
 import { ArtworkSchema, type Artwork } from "../types";
 import { loadFavoritesFromLocalStorage as loadFavoriteEntriesFromLocalStorage } from "../util/storage";
 
-// Schema für die gesamte API-Antwort
-// const ArtworksResponseSchema = z.object({
-//     data: z.array(_ArtworkSchema)
-// });
-
 export async function fetchArtworks(loadFavorites: boolean = false): Promise<Artwork[]> {
 
     // :et's use the same function for fetching db and localStorage favorites
@@ -45,7 +40,7 @@ async function loadFavoriteArtworksById(): Promise<Artwork[]> {
     }
 
     const artworks = await Promise.all(
-        favorites.map(async ({ artworkId }) => {
+        favorites.map(async ({ artworkId, notes }) => {
             try {
                 const response = await fetch(
                     `https://api.artic.edu/api/v1/artworks/${artworkId}?fields=id,title,image_id,artist_title`,
@@ -64,7 +59,7 @@ async function loadFavoriteArtworksById(): Promise<Artwork[]> {
                     return null;
                 }
 
-                return data;
+                return { ...data, notes };
             } catch (error) {
                 console.error(`Error fetching favorite artwork ${artworkId}:`, error);
                 return null;

@@ -75,9 +75,9 @@ const EntryDetails = ({ entry, constrained, onDetails, editEntry, onClose, remov
                                 <button
                                     className="btn btn-success"
                                     onClick={() => {
-                                        //editEntry(notesValue);
-                                        console.log(notesValue);
-                                        editEntry({ ...entry, notes: notesValue }); // vollständiges Objekt
+                                        const normalizedNotes = notesValue.trim().length > 0 ? notesValue : null;
+                                        saveFavoriteToLocalStorage({ artworkId: entry.id, notes: normalizedNotes });
+                                        editEntry({ ...entry, notes: normalizedNotes });
                                         setEditingNotes(false);
                                     }}
                                 >
@@ -118,19 +118,28 @@ const EntryDetails = ({ entry, constrained, onDetails, editEntry, onClose, remov
                     <button className="btn btn-danger" onClick={removeEntry}>  Delete </button>
                 </div> */}
 
-                <ArtworkActionButtons artworkId={entry.id} onDetails={onDetails} removeEntry={() => removeEntry(entry)} />
+                <ArtworkActionButtons artworkId={entry.id} editEntry={onEditPress} removeEntry={() => removeEntry(entry)} />
             </div>
         </div>
     );
+
+    function onEditPress() {
+        if (constrained) {
+            onDetails();
+            return;
+        }
+
+        setEditingNotes(true);
+    };
 };
 
 type ArtworkActionButtonsProps = {
     artworkId: number;
-    onDetails: () => void;
+    editEntry: () => void;
     removeEntry: () => void;
 };
 
-const ArtworkActionButtons = ({ artworkId, onDetails, removeEntry }: ArtworkActionButtonsProps) => {
+const ArtworkActionButtons = ({ artworkId, editEntry, removeEntry }: ArtworkActionButtonsProps) => {
 
     const { setArtworks } = useArtworkContext();
     const isInFavorites: boolean = checkIfArtworkIsFavorite(artworkId);
@@ -188,7 +197,7 @@ const ArtworkActionButtons = ({ artworkId, onDetails, removeEntry }: ArtworkActi
     function onNotesPress() {
         console.log("On notes press for", artworkId)
         // open notes editing UI
-        onDetails();
+        editEntry();
     }
 
     function onRemoveFromFavoritesPress() {

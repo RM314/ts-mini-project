@@ -17,6 +17,7 @@ import { type Artwork } from "./types";
 import { ArtworkContext } from "./context/ArtworkContext";
 import { fetchArtworks } from "./api/chicagoAPI"
 import { useViewModeContext, ViewMode } from "./context/ViewModeContext";
+import { removeFavoriteFromLocalStorage } from "./util/storage";
 
 import SearchBarView from "./components/SearchBar";
 
@@ -69,27 +70,34 @@ function App() {
 
   };
 
-
-  // TODO: Update this so it doesn't remove an item from the museum's database :)
-  // use the commented code below as a ref
   const removeEntryYes = (entry: Artwork) => {
-    artworks.splice(artworks.indexOf(entry), 1);
-    setArtworks(artworks.filter(el => el != entry));
+    removeFavoriteFromLocalStorage(entry.id);
+
+    if (viewMode === ViewMode.All) {
+      // keep artwork in list, only clear favorite marker (notes)
+      setArtworks((prev: Artwork[]) => {
+        const updated = prev.map(e => {
+          if (e.id === entry.id) {
+            return { ...e, notes: null };
+          }
+
+          return e;
+        });
+
+        return updated;
+      });
+
+    } else {
+      // favorites mode: remove from visible list
+      setArtworks((prev: Artwork[]) => prev.filter(el => el.id !== entry.id));
+    }
+
     setSelectedEntry(null);
+
     // save done by effect
     setRemoveModalOpen(false);
     setViewEntryModalOpen(false);
-  }
-
-  // setArtworks((prev: Artwork[]) => {
-    //     const updated = prev.map(e => {
-    //         if (e.id === artworkId) {
-    //             const { notes, ...rest } = e; // removing notes to indicate non-favorite status
-    //             return rest;
-    //         }
-    //         return e;
-    //     });
-    //     return updated;
+  };
 
   const removeEntryNo = () => {
     setRemoveModalOpen(false);
@@ -113,7 +121,7 @@ function App() {
         <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entry={selectedEntry!} />
         <ConfirmRemoveModal open={isRemoveModalOpen} selectedEntry={selectedEntry!} onYes={removeEntryYes} onNo={removeEntryNo} />
       </ArtworkContext.Provider>
-      
+
     </>
   );
 }

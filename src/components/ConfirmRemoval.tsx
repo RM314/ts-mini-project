@@ -8,15 +8,17 @@ type Props = {
 };
 
 
-const ConfirmRemoveModal = ({ open, selectedEntry, onYes, onNo } : Props) =>   {
+const ConfirmRemoveModal = ({ open, selectedEntry, onYes, onNo } : Props) => {
+
   if (!open) return null;
+
   return (
     <dialog className="modal modal-open">
       <div className="modal-box">
-        <p>Really remove day {selectedEntry.date} ?</p>
+        <p>Really remove this artwork ?</p>
 
         <div className="modal-action">
-          <button className="btn btn-warning" onClick={(event) => onYes(selectedEntry)} >Yes</button>
+          <button className="btn btn-warning" onClick={() => onYes(selectedEntry)} >Yes</button>
           <button className="btn btn-primary" onClick={onNo}>No</button>
         </div>
       </div>
@@ -27,4 +29,3 @@ const ConfirmRemoveModal = ({ open, selectedEntry, onYes, onNo } : Props) =>   {
 }
 
 export default ConfirmRemoveModal;
-

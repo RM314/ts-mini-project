@@ -1,13 +1,19 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
 import type { Artwork } from "../types";
 
 interface IArtworkContextType {
     artworks?: Artwork[];
-    setArtworks: (artworks: Artwork[]) => void;
+    setArtworks: Dispatch<SetStateAction<Artwork[]>>;
 }
 
 export const ArtworkContext = createContext<IArtworkContextType | undefined>(undefined);
 
 export function useArtworkContext() {
-    return useContext(ArtworkContext);
+    const context = useContext(ArtworkContext);
+
+    if (!context) {
+        throw new Error("useArtworkContext must be used inside ArtworkContext.Provider");
+    }
+
+    return context;
 }

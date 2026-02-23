@@ -16,10 +16,12 @@ import Footer from "./components/Footer"
 import { type Artwork } from "./types";
 import { ArtworkContext } from "./context/ArtworkContext";
 import { fetchArtworks } from "./api/chicagoAPI"
+import { useViewModeContext, ViewMode } from "./context/ViewModeContext";
 
 import SearchBarView from "./components/SearchBar";
 
 function App() {
+  const { viewMode } = useViewModeContext();
 
   // setup context for artwork
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -33,12 +35,12 @@ function App() {
 
   // on load
   useEffect(() => {
-    fetchArtworks()
+    fetchArtworks(viewMode === ViewMode.Favorites)
       .then((data) => setArtworks(data))
       .catch((error) => {
         console.error("Error fetching artworks:", error);
       });
-  }, []);
+  }, [viewMode]);
 
   const openViewEntryModal = (entry: Artwork) => {
     setSelectedEntry(entry);
@@ -48,13 +50,6 @@ function App() {
   const closeViewEntryModal = () => {
     setSelectedEntry(null);
     setViewEntryModalOpen(false);
-  };
-
-
-  const openAddEntryModal = () => {
-    //isEditRef.current=false;
-    setSelectedEntry(null);
-    //setAddEntryModalOpen(true);
   };
 
   const editEntry = (entry: Artwork) => {
@@ -74,40 +69,27 @@ function App() {
 
   };
 
-  const handleNewEntry = (newEntry: Artwork) => {
 
-    /*
-    if (!isEditRef.current) {
-      const entry= {
-        ...newEntry,
-        id: crypto.randomUUID()
-      };
-      setEntries(prev => {
-        const updated = [...prev, entry];
-        const sorted=updated.toSorted((a, b) => b.date.localeCompare(a.date))
-        console.log(sorted.map(e => e.id));
-        return sorted;
-      });
-    } else {
-      const editEntry = newEntry as Artwork;
-      setEntries(prev => {
-        const updated = prev.map(e => (e.id === editEntry.id) ? editEntry : e);
-        const sorted=updated.toSorted((a, b) => b.date.localeCompare(a.date))
-        return sorted;
-      });
-    }
-    */
-    // closeAddEntryModal();
-  };
-
+  // TODO: Update this so it doesn't remove an item from the museum's database :)
+  // use the commented code below as a ref
   const removeEntryYes = (entry: Artwork) => {
-    //entries.splice(entries.indexOf(entry), 1);
-    // setEntries(entries.filter(el => el != entry));
+    artworks.splice(artworks.indexOf(entry), 1);
+    setArtworks(artworks.filter(el => el != entry));
     setSelectedEntry(null);
     // save done by effect
     setRemoveModalOpen(false);
     setViewEntryModalOpen(false);
   }
+
+  // setArtworks((prev: Artwork[]) => {
+    //     const updated = prev.map(e => {
+    //         if (e.id === artworkId) {
+    //             const { notes, ...rest } = e; // removing notes to indicate non-favorite status
+    //             return rest;
+    //         }
+    //         return e;
+    //     });
+    //     return updated;
 
   const removeEntryNo = () => {
     setRemoveModalOpen(false);
@@ -122,13 +104,13 @@ function App() {
   return (
     <>
       <ArtworkContext.Provider value={{ artworks, setArtworks }}>
-        <Header onAddClick={openAddEntryModal} />
+        <Header />
         <SearchBarView />
         <main>
           <EntryList onClick={openViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entries={artworks} /> {/*This displays the list of EntryCard and opens ViewEntryModal when clicked, which displays EntryDetails*/}
         </main>
         <Footer />
-        <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entry={selectedEntry} />
+        <ViewEntryModal isOpen={isViewEntryModalOpen} onClose={closeViewEntryModal} removeEntry={removeEntry} editEntry={editEntry} entry={selectedEntry!} />
         <ConfirmRemoveModal open={isRemoveModalOpen} selectedEntry={selectedEntry!} onYes={removeEntryYes} onNo={removeEntryNo} />
       </ArtworkContext.Provider>
       

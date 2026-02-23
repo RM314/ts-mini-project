@@ -1,13 +1,19 @@
 import { z } from "zod";
 
- export type DiaryEntry = {
-  id: string;
-  date: string;
-  title: string;
-  text: string;
-  imageUrl: string;
-};
+// // deprecated! 
+//  export type DiaryEntry = {
+//   id: string;
+//   date: string;
+//   title: string;
+//   text: string;
+//   imageUrl: string;
+// };
 
+// to be used in localStorage
+export type FavoriteArtwork = {
+  artworkId: number;
+  notes: string | null;
+};
 
 export const ArtworkSchema = z .object({
 

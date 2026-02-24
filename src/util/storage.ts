@@ -1,5 +1,4 @@
-// import type { DiaryEntry, NewEntryInput } from "../types";
-import { type Artwork, type FavoriteArtwork } from "../types";
+import { type FavoriteArtwork } from "../types";
 
 const STORAGE_KEY : string = 'artwork_ts_favorites';
 
@@ -27,7 +26,7 @@ export function checkIfArtworkIsFavorite(artworkId: number): boolean {
     return favorites.some(fav => fav.artworkId === artworkId);
 }
 
-export function saveFavoriteToLocalStorage({ artworkId, notes }: FavoriteArtwork) { 
+export function saveFavoriteToLocalStorage({ artworkId, title, artist, notes }: FavoriteArtwork) { 
     try {
         const favorites = loadFavoritesFromLocalStorage();
 
@@ -39,7 +38,7 @@ export function saveFavoriteToLocalStorage({ artworkId, notes }: FavoriteArtwork
             favorites[existingIndex].notes = notes;
         } else {
             // add new favorite
-            favorites.push({ artworkId, notes });
+            favorites.push({ artworkId, title, artist, notes });
         }
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
@@ -66,6 +65,16 @@ export function removeFavoriteFromLocalStorage(artworkId: number) {
     }
 }
 
+export function searchByKeywordInFavorites(keyword: string): FavoriteArtwork[] {
+    const favorites = loadFavoritesFromLocalStorage();
+    const lowerKeyword = keyword.toLowerCase();
+
+    return favorites.filter(fav => 
+        (fav.title && fav.title.toLowerCase().includes(lowerKeyword)) ||
+        (fav.artist && fav.artist.toLowerCase().includes(lowerKeyword))
+    );
+}
+
 // export function loadDiaryEntries() : DiaryEntry[]  {
 //     try {
 //         const raw = localStorage.getItem(STORAGE_KEY);
@@ -90,7 +99,7 @@ export function removeFavoriteFromLocalStorage(artworkId: number) {
 //     // double checking the date, in case UI fails
 //     //const dateExsists = entries.some((d) => d.date === entry.date);
 
-//      const withId: DiaryEntry = isEdit ? (entry as DiaryEntry) : { ...(entry as NewEntryInput), id: crypto.randomUUID() };
+//      const withId: DiaryEntry = isEdit ? (entry as DiaryEntry) : { ...(entry as ), id: crypto.randomUUID() };
 
 //      const dateExisting = entries.find(d => d.date === withId.date);
 

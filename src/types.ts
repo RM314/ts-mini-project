@@ -12,6 +12,8 @@ import { z } from "zod";
 // to be used in localStorage
 export type FavoriteArtwork = {
   artworkId: number;
+  title: string | null;
+  artist: string | null;
   notes: string | null;
 };
 
@@ -44,5 +46,3 @@ export const ArtworkSchema = z .object({
   .strip();
 
 export type Artwork = z.infer<typeof ArtworkSchema>;
-
-export type NewEntryInput = Omit<DiaryEntry, "id">;
